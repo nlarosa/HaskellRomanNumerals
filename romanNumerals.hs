@@ -1,46 +1,41 @@
-import System  (getArgs, getProgName)
-import Numeric (readDec)
-import Maybe   (fromJust, fromMaybe)
-import Char    (toUpper)
+import System.Environment   (getArgs, getProgName)
+import Numeric              (readDec)
+import Data.Maybe           (fromJust, fromMaybe)
+import Data.Char            (toUpper)
 
-{- Roman Numerals.  You can use toRoman and fromRoman directly
--- if you wish.  You can also compile this module as a program and
--- use it at the commandline under the names toRoman or fromRoman,
--- depending on the sense you want the conversion.  Note, there isn't
--- any error-checking on the input strings, and we use limited precision
--- Ints because surely no-one wants to play with roman numerals any
--- larger than that!
-
--- Author: Malcolm.Wallace@cs.york.ac.uk, 29 July 1999
--}
+-- Original Inspiration: Malcolm.Wallace@cs.york.ac.uk, 29 July 1999
 
 toRoman   :: Int -> String
 fromRoman :: String -> Int
 
-
--- Each numeral has a decimal value.
-numerals = [ ('I',   1), ('V',   5), ('X',  10), ('L',  50),
+-- List of tuples containing Numeral and corresponding Int value
+numeralTuples = [ ('I',   1), ('V',   5), ('X',  10), ('L',  50),
              ('C', 100), ('D', 500), ('M',1000) ]
 
--- For each numeral, there is a single permitted prefix digit for subtraction.
-subnums  = [ ('V','I'),  ('X','I'),  ('L','X'),
+-- List of tuples containing allowed subtractions
+subtractionTuples  = [ ('V','I'),  ('X','I'),  ('L','X'),
              ('C','X'),  ('D','C'),  ('M','C') ]
 
 -- Traverse the numeral list with an accumulator consisting of the
 -- string built so far (in reverse order) and the remaining value to be
 -- converted.
-toRoman n  = (reverse . snd) (foldr toNumeral (n,"") numerals)
+toRoman n  = (reverse . snd) (foldr toNumeral (n,"") numeralTuples)
 
--- Each numeral could potentially appear many times (case 1), and we must
--- also handle (case 2) where a numeral *nearly* fits so we use a subtractive
--- prefix.
+-- reverse ( secondElement ( ... ) )
+-- where ... is the result of traversing the numeralTuple list in reverse order
+-- calling toNumeral ('M', 1000) (n, "")
+--         toNumeral ('D', 500) (n-1000, "M") and so on
+-- The string is built in reverse, and the secondElement returns the string itself
+
+-- Case 1 - Numerals appearing multiple times (but not more than 3x)
+-- Case 2 - Numeral "nearly fits", so we use a subtractive prefix
+
 toNumeral st@(rdigit, base) (n,s)
-  | n >= base    = toNumeral st (n-base, rdigit:s)
-  | n+k >= base  = (n-base+k, rdigit:tdigit:s)
+  | n >= base    = toNumeral st (n-base, rdigit:s)    -- Case 1
+  | n+k >= base  = (n-base+k, rdigit:tdigit:s)        -- Case 2
   | otherwise    = (n,s)
-  where tdigit = fromMaybe '\0' (lookup rdigit subnums)
-        k      = fromMaybe  0   (lookup tdigit numerals)
-
+  where tdigit = fromMaybe '\0' (lookup rdigit subtractionTuples)
+        k      = fromMaybe  0   (lookup tdigit numeralTuples)
 
 
 -- The inverse is pretty straightforward by comparison.  First, divide
@@ -56,7 +51,7 @@ fromNumeral x y
 maxmunch "" = []
 maxmunch string@(x:_) =
   let (these,those) = span (x==) string
-  in fromJust (lookup x numerals) * length these : maxmunch those
+  in fromJust (lookup x numeralTuples) * length these : maxmunch those
 
 
 
