@@ -37,6 +37,8 @@ toNumeral st@(rdigit, base) (n,s)
   where tdigit = fromMaybe '\0' (lookup rdigit subtractionTuples)
         k      = fromMaybe  0   (lookup tdigit numeralTuples)
 
+  -- tdigit is the subtraction Numeral for a corresponding Numeral
+  -- k is the numeric value of the subtraction Numeral
 
 -- The inverse is pretty straightforward by comparison.  First, divide
 -- up the string into chunks of identical letters, and add those together
@@ -52,8 +54,6 @@ maxmunch "" = []
 maxmunch string@(x:_) =
   let (these,those) = span (x==) string
   in fromJust (lookup x numeralTuples) * length these : maxmunch those
-
-
 
 -- Now just some tidying up so we can call the program from the
 -- commandline.
