@@ -7,9 +7,9 @@ Execution Instructions:
   * [Windows](https://haskell.org/platform/download/8.2.1/HaskellPlatform-8.2.1-full-x86_64-setup.exe)
   * [MacOS](https://haskell.org/platform/download/8.2.1/Haskell%20Platform%208.2.1%20Full%2064bit-signed.pkg)
   
-* `ghci`
-* `:load romanNumerals`
-* `toRoman 3999`
+1. `ghci`
+2. `:load romanNumerals`
+3. `toRoman 3999`
   * outputs `MMMCMXCIX`
-* `fromRoman "MMMCMXCIX"`
+4. `fromRoman "MMMCMXCIX"`
   * outputs `3999`
