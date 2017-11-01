@@ -37,8 +37,22 @@ toNumeral st@(rdigit, base) (n,s)
   where tdigit = fromMaybe '\0' (lookup rdigit subtractionTuples)
         k      = fromMaybe  0   (lookup tdigit numeralTuples)
 
-  -- tdigit is the subtraction Numeral for a corresponding Numeral
-  -- k is the numeric value of the subtraction Numeral
+-- tdigit is the subtraction Numeral for a corresponding Numeral
+-- k is the numeric value of the subtraction Numeral
+
+-- toNumeral ("M", 1000) (1999, "")   tdigit = "C", k = 100
+-- toNumeral ("M", 1000) (999, "M")
+-- toNumeral ("M", 1000) (99, "MCM")
+
+-- toNumeral ("D", 500) (99, "MCM")   tdigit = "C", k = 100
+
+-- toNumeral ("C", 100) (99, "MCM")   tdigit = "X", k = 10
+-- toNumeral ("C", 100) (9, "CXMCM")
+
+-- toNumeral ("X", 10) (9, "CXMCM")  tdigit = "I", k = 1
+-- toNumeral ("X", 10) (0, "XICXMCM")
+
+-- reverse of "XICXMCM" -> "MCMXCIX" = 1999
 
 -- The inverse is pretty straightforward by comparison.  First, divide
 -- up the string into chunks of identical letters, and add those together
